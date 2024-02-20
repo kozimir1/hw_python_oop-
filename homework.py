@@ -19,7 +19,8 @@ date_format = "%d.%m.%Y"
 
 
 class Calculator:
-    """Создать колькулятор с единственным принимаемым параметром - limit"""
+    """Создать колькулятор с единственным принимаемым параметром - limit
+    методы add_record,get_today_stats,get_week_stats"""
 
     def __init__(self, limit):
         self.limit = limit
@@ -33,6 +34,12 @@ class Calculator:
         """Считать статистику за сегодня"""
         to_day = dt.date.today()
         return sum([record.amount for record in self.records if record.date == to_day])
+
+    def get_week_stats(self):
+        """Статистика за неделю"""
+
+        one_week = dt.date.today() - dt.timedelta(7)
+        return sum([record.amount for record in self.records if record.date > one_week])
 
 
 class Record:
@@ -48,10 +55,16 @@ class Record:
             self.date = dt.datetime.strptime(date, date_format).date()
 
 
+# class CaloriesCalculator(Calculator):
+# 	if some>0:
+# 		retturn
+
 input()
 kal = Calculator(3000)
 kal.add_record(Record(amount=691, comment="Катание на такси"))
 kal.add_record(Record(amount=691, comment="Бегание по кругу"))
+kal.add_record(Record(amount=123, comment="Вонючесть", date="14.02.2024"))
 print(kal.records)
 print(kal.get_today_stats())
+print(kal.get_week_stats())
 print(type(kal.records))
