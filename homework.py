@@ -90,9 +90,3 @@ class CashCalculator(Calculator):
             return f"На сегодня осталось {currency_ballance} {name_cur}"
 
         return f"Денег нет, держись: твой долг - {currency_ballance} {name_cur}"
-
-
-fff = CashCalculator(1000)
-fff.add_record(Record(amount=145, comment="кофе"))
-fff.add_record(Record(amount=2145, comment="чай"))
-print(fff.get_today_cash_remained("eur"))
