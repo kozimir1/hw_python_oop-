@@ -41,6 +41,10 @@ class Calculator:
         one_week = dt.date.today() - dt.timedelta(7)
         return sum([record.amount for record in self.records if record.date > one_week])
 
+    def get_today_remained(self):
+
+        return self.limit - self.get_today_stats()
+
 
 class Record:
     """Создаем класс записи принимает обязательные именованые аргументы
@@ -55,16 +59,26 @@ class Record:
             self.date = dt.datetime.strptime(date, date_format).date()
 
 
-# class CaloriesCalculator(Calculator):
-# 	if some>0:
-# 		retturn
+class CaloriesCalculator(Calculator):
+    """Калькулятор каллорий, метод метод отличный от родительского класса Calculator это get_today_calories_remained"""
+
+    def get_today_calories_remained(self):
+        some = self.get_today_remained()
+        if some > 0:
+            return "Сегодня можно съесть что-нибудь ещё, но с общей калорийностью не более {} кКал".format(
+                some
+            )
+        else:
+            return "Хватит есть!"
+
 
 input()
-kal = Calculator(3000)
+kal = CaloriesCalculator(3000)
 kal.add_record(Record(amount=691, comment="Катание на такси"))
 kal.add_record(Record(amount=691, comment="Бегание по кругу"))
 kal.add_record(Record(amount=123, comment="Вонючесть", date="14.02.2024"))
 print(kal.records)
 print(kal.get_today_stats())
 print(kal.get_week_stats())
+print(kal.get_today_calories_remained())
 print(type(kal.records))
