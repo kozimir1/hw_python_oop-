@@ -1,20 +1,5 @@
 import datetime as dt
 
-datetime_str = "25.12.2022 23:20:59"
-
-
-fff = dt.date(1992, 10, 6)
-
-print(dt.date.today().isoweekday())
-print(fff)
-print(dt.date.toordinal(fff))
-print(type(fff))
-
-ttt = dt.time(11, 26)
-print(ttt)
-print(type(ttt))
-print(*[ttt, fff])
-
 date_format = "%d.%m.%Y"
 
 
@@ -38,8 +23,15 @@ class Calculator:
     def get_week_stats(self):
         """Статистика за неделю"""
 
-        one_week = dt.date.today() - dt.timedelta(7)
-        return sum([record.amount for record in self.records if record.date > one_week])
+        to_day = dt.date.today()
+        date_week_ago = to_day - dt.timedelta(days=7)
+        return sum(
+            [
+                record.amount
+                for record in self.records
+                if date_week_ago < record.date <= to_day
+            ]
+        )
 
     def get_today_remained(self):
 
@@ -60,9 +52,9 @@ class Record:
 
 
 class CaloriesCalculator(Calculator):
-    """Калькулятор каллорий, метод метод отличный от родительского класса Calculator это get_today_calories_remained"""
+    """Калькулятор кал, метод метод отличный от родительского класса Calculator это get_today_calories_remained"""
 
-    def get_today_calories_remained(self):
+    def get_calories_remained(self):
         some = self.get_today_remained()
         if some > 0:
             return "Сегодня можно съесть что-нибудь ещё, но с общей калорийностью не более {} кКал".format(
@@ -72,13 +64,28 @@ class CaloriesCalculator(Calculator):
             return "Хватит есть!"
 
 
-input()
-kal = CaloriesCalculator(3000)
-kal.add_record(Record(amount=691, comment="Катание на такси"))
-kal.add_record(Record(amount=691, comment="Бегание по кругу"))
-kal.add_record(Record(amount=123, comment="Вонючесть", date="14.02.2024"))
-print(kal.records)
-print(kal.get_today_stats())
-print(kal.get_week_stats())
-print(kal.get_today_calories_remained())
-print(type(kal.records))
+class CashCalculator(Calculator):
+    """Калькулятор каллорий, метод метод отличный от родительского класса Calculator это get_today_cash_remained"""
+
+    USD_RATE = 82.0
+    EURO_RATE = 95.0
+    RUB_RATE = 1.0
+
+    def get_today_cash_remained(self, cur="rub"):
+        currency = dict(rub=self.RUB_RATE, eur=self.EURO_RATE, usd=self.USD_RATE)
+        if cur.lower() not in currency:
+            raise ValueError("Валюта введена НЕ ВЕРНО")
+        ballance = self.get_today_remained()
+        currency_ballance = round(ballance / currency[cur.lower()], 2)
+        if ballance == 0:
+            return "Денег нет, держись"
+        elif ballance > 0:
+            return f"На сегодня осталось {currency_ballance} {cur.upper()}"
+
+        return f"Денег нет, держись: твой долг {currency_ballance} {cur.upper()}"
+
+
+fff = CashCalculator(1000)
+fff.add_record(Record(amount=145, comment="кофе"))
+fff.add_record(Record(amount=2145, comment="чай"))
+print(fff.get_today_cash_remained("eur"))
