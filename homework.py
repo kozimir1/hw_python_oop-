@@ -19,18 +19,27 @@ date_format = "%d.%m.%Y"
 
 
 class Calculator:
+    """Создать колькулятор с единственным принимаемым параметром - limit"""
+
     def __init__(self, limit):
         self.limit = limit
         self.records = []
 
     def add_record(self, obj):
-        self.records.append((obj.amount, obj.date, obj.comment))
+        """Принимает объект класса Record(...)"""
+        self.records.append((obj))
+
+    def get_today_stats(self):
+        """Считать статистику за сегодня"""
+        to_day = dt.date.today()
+        return sum([record.amount for record in self.records if record.date == to_day])
 
 
 class Record:
-    """Создаем класс записи"""
+    """Создаем класс записи принимает обязательные именованые аргументы
+    amount и comment, date вводить необязательно"""
 
-    def __init__(self, amount, comment, date=None):
+    def __init__(self, *, amount, comment, date=None):
         self.amount = amount
         self.comment = comment
         if date is None:
@@ -41,6 +50,8 @@ class Record:
 
 input()
 kal = Calculator(3000)
-kal.add_record(Record(amount=691, comment="Катание на такси", date="08.03.2022"))
+kal.add_record(Record(amount=691, comment="Катание на такси"))
+kal.add_record(Record(amount=691, comment="Бегание по кругу"))
 print(kal.records)
+print(kal.get_today_stats())
 print(type(kal.records))
