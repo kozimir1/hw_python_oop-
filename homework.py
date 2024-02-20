@@ -52,7 +52,8 @@ class Record:
 
 
 class CaloriesCalculator(Calculator):
-    """Калькулятор кал, метод метод отличный от родительского класса Calculator это get_today_calories_remained"""
+    """Калькулятор каллорий, метод дополняющий родительского класс Calculator
+    это get_today_calories_remained"""
 
     def get_calories_remained(self):
         some = self.get_today_remained()
@@ -72,17 +73,23 @@ class CashCalculator(Calculator):
     RUB_RATE = 1.0
 
     def get_today_cash_remained(self, cur="rub"):
-        currency = dict(rub=self.RUB_RATE, eur=self.EURO_RATE, usd=self.USD_RATE)
+        # currency = dict(rub=self.RUB_RATE, eur=self.EURO_RATE, usd=self.USD_RATE)
+        currency = {
+            "rub": ("руб", self.RUB_RATE),
+            "eur": ("Euro", self.EURO_RATE),
+            "usd": ("USD", self.USD_RATE),
+        }
         if cur.lower() not in currency:
             raise ValueError("Валюта введена НЕ ВЕРНО")
+        name_cur, rate = currency[cur.lower()]
         ballance = self.get_today_remained()
-        currency_ballance = round(ballance / currency[cur.lower()], 2)
+        currency_ballance = abs(round(ballance / rate, 2))
         if ballance == 0:
             return "Денег нет, держись"
         elif ballance > 0:
-            return f"На сегодня осталось {currency_ballance} {cur.upper()}"
+            return f"На сегодня осталось {currency_ballance} {name_cur}"
 
-        return f"Денег нет, держись: твой долг {currency_ballance} {cur.upper()}"
+        return f"Денег нет, держись: твой долг - {currency_ballance} {name_cur}"
 
 
 fff = CashCalculator(1000)
