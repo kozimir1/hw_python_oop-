@@ -2,9 +2,6 @@ import datetime as dt
 
 datetime_str = "25.12.2022 23:20:59"
 
-my_datetime = dt.datetime.strptime(datetime_str, "%H:%M:%S %d.%m.%Y")
-
-print(my_datetime)
 
 fff = dt.date(1992, 10, 6)
 
@@ -26,15 +23,24 @@ class Calculator:
         self.limit = limit
         self.records = []
 
+    def add_record(self, obj):
+        self.records.append((obj.amount, obj.date, obj.comment))
+
 
 class Record:
     """Создаем класс записи"""
 
-    def __init__(self, *, amount, comment, date=None):
+    def __init__(self, amount, comment, date=None):
         self.amount = amount
-        self.date = date
         self.comment = comment
         if date is None:
-            self.date = dt.datetime(date, date_format).date()
-        else:
             self.date = dt.date.today()
+        else:
+            self.date = dt.datetime.strptime(date, date_format).date()
+
+
+input()
+kal = Calculator(3000)
+kal.add_record(Record(amount=691, comment="Катание на такси", date="08.03.2022"))
+print(kal.records)
+print(type(kal.records))
